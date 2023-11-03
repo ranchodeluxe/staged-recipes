@@ -15,7 +15,7 @@ dates = pd.date_range('1951-01-01', '2023-09-01', freq='MS')
 concat_dim = ConcatDim(name='time', keys=dates, nitems_per_file=None)
 pattern = FilePattern(format_function, concat_dim)
 
-recipe = (
+nclimgrid = (
     Create(pattern.items())
     | OpenWithKerchunk(
         file_type=pattern.file_type,

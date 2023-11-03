@@ -3,7 +3,7 @@ description: 'The NOAA Monthly U.S. Climate Gridded Dataset (NClimGrid) consists
 pangeo_forge_version: '0.9.2'
 recipes:
   - id: noaa-nclimgrid
-    object: 'recipe:recipe'
+    object: 'recipe:nclimgrid'
 provenance:
   providers:
     - name: 'NOAA NCEI'
