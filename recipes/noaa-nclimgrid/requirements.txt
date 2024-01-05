@@ -1,2 +1,2 @@
 s3fs
-pangeo-forge-recipes==0.10.3
+pangeo-forge-recipes>=0.10.3
