@@ -1,2 +1,3 @@
 s3fs
 pangeo-forge-recipes>=0.10.3
+apache-beam==2.52.0
