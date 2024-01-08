@@ -2,7 +2,7 @@ import pandas as pd
 from apache_beam import Create
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
-from pangeo_forge_recipes.transforms import OpenWithKerchunk, WriteCombinedReference
+from pangeo_forge_recipes.transforms import OpenURLWithFSSpec, OpenWithKerchunk, WriteCombinedReference
 
 input_url_pattern = 's3://noaa-nclimgrid-daily-pds/v1-0-0/grids/{yyyy}/ncdd-{yyyymm}-grd-scaled.nc'
 
