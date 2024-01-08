@@ -17,6 +17,7 @@ pattern = FilePattern(format_function, concat_dim)
 
 nclimgrid = (
     Create(pattern.items())
+    | OpenURLWithFSSpec()
     | OpenWithKerchunk(
         file_type=pattern.file_type,
         remote_protocol='s3',
