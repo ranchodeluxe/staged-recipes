@@ -77,6 +77,7 @@ def gen_data_links(rel):
     for granule in granules:
         s3_links = filter_data_links(granule['links'], rel)
         first = next(s3_links, None)
+        print(first)
         # throw if CMR does not have exactly one S3 link for an item
         if not first or next(s3_links, None) is not None:
             raise ValueError(f"Expected 1 link of type {rel} on {granule['title']}")
