@@ -194,15 +194,6 @@ pattern = pattern_from_file_sequence(
     list(gen_data_links(selected_rel)), CONCAT_DIM, fsspec_open_kwargs=fsspec_auth_kwargs
 )
 
-# target_root is injected only into certain transforms in pangeo-forge-recipes
-# this is a hacky way to pull it out of the WriteCombinedReference transform
-hacky_way_to_pull = WriteCombinedReference(
-    store_name=SHORT_NAME,
-    concat_dims=pattern.concat_dims,
-    identical_dims=IDENTICAL_DIMS,
-)
-
-
 def get_time_from_attr(index: int, z: zarr.Group, var: str, fn: str):
     import numpy as np
 
@@ -216,16 +207,10 @@ recipe = (
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
-    | CombineReferences(
-        concat_dims=pattern.concat_dims,
-        identical_dims=IDENTICAL_DIMS,
-        mzz_kwargs={'coo_map': {'time': get_time_from_attr}},
-    )
-    | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
-    | WriteReferences(
+    | WriteCombinedReference(
         store_name=SHORT_NAME,
-        target_root=hacky_way_to_pull.target_root,
         storage_options=pattern.fsspec_open_kwargs,
+        precombine_inputs=True,
     )
     | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-50, 50), 'lon': (-180, 180)})
 )
