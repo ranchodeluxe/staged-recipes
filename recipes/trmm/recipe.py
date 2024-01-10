@@ -74,7 +74,7 @@ def filter_data_links(links, rel):
 
 def gen_data_links(rel):
     granules = GranuleQuery().short_name(SHORT_NAME).downloadable(True).get_all()
-    for granule in granules:
+    for count, granule in enumerate(granules):
         s3_links = filter_data_links(granule['links'], rel)
         first = next(s3_links, None)
         print(first)
@@ -82,6 +82,9 @@ def gen_data_links(rel):
         if not first or next(s3_links, None) is not None:
             raise ValueError(f"Expected 1 link of type {rel} on {granule['title']}")
         yield first['href']
+
+        if count >= 10:
+            return
 
 
 @dataclass
