@@ -167,7 +167,7 @@ class ValidateDatasetDimensions(beam.PTransform):
     expected_dims: Dict = field(default_factory=dict)
 
     @staticmethod
-    def _validate(ds: Dataset, expected_dims: Dict) -> None:
+    def _validate(ds: FSSpecTarget, expected_dims: Dict) -> None:
         if set(ds.dims) != expected_dims.keys():
             raise ValueError(f'Expected dimensions {expected_dims.keys()}, got {ds.dims}')
         for dim, bounds in expected_dims.items():
