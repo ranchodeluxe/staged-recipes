@@ -31,7 +31,7 @@ ED_PASSWORD = os.environ['EARTHDATA_PASSWORD']
 
 CREDENTIALS_API = 'https://data.gesdisc.earthdata.nasa.gov/s3credentials'
 SHORT_NAME = 'TRMM_3B42_Daily'
-CONCAT_DIM = 'time'
+CONCAT_DIM = ['time',]
 IDENTICAL_DIMS = ['lat', 'lon']
 
 # use HTTP_REL if S3 access is not possible. S3_REL is faster.
@@ -212,7 +212,7 @@ recipe = (
         store_name=SHORT_NAME,
         concat_dims=CONCAT_DIM,
         identical_dims=IDENTICAL_DIMS,
-        precombine_inputs=True,
+        #precombine_inputs=True,
     )
     | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-50, 50), 'lon': (-180, 180)})
 )
