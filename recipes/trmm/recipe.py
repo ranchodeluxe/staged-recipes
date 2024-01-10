@@ -209,7 +209,6 @@ recipe = (
     )
     | WriteCombinedReference(
         store_name=SHORT_NAME,
-        storage_options=pattern.fsspec_open_kwargs,
         precombine_inputs=True,
     )
     | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-50, 50), 'lon': (-180, 180)})
