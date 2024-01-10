@@ -52,6 +52,7 @@ def earthdata_auth(username: str, password: str):
     auth_redirect.raise_for_status()
 
     final = requests.get(auth_redirect.headers['location'], allow_redirects=False)
+    print(final.json())
 
     results = requests.get(CREDENTIALS_API, cookies={'accessToken': final.cookies['accessToken']})
     results.raise_for_status()
