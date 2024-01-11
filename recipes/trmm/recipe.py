@@ -214,28 +214,35 @@ def get_all_begin_dates(z):
 
 class AddBeginDateToZarrGroup(beam.PTransform):
     def expand(self, pcoll):
-        # Apply a ParDo to process each element in the pcoll
         return pcoll | beam.ParDo(AttachBeginDate())
 
+
 class AttachBeginDate(beam.DoFn):
-    def process(self, element):
-        # Assuming each element is a zarr.Group or similar
-        print(type(element))
-        print(type(element[0]))
-        print(element[0])
+    def process(self, zarr_meta):
+        import numpy as np
+
+        store = zarr.storage.DictStore(zarr_meta)
+        z = zarr.open(store, mode='r')
+        print(type(z))
+
+        time_data = np.datetime64(z.attrs['BeginDate'])
+        z['time'].resize(time_data.shape)
+        print(type(z))
         import pdb; pdb.set_trace()
-        for key, item in element.items():
+
+        for key, item in zarrgroup.items():
             if 'BeginDate' in item.attrs:
                 begin_date = item.attrs['BeginDate']
                 # Add or update the BeginDate attribute to the element
-                element.attrs['BeginDate'] = begin_date
+                zarrgroup.attrs['BeginDate'] = begin_date
         # Return the modified element
         yield element
+
 
 recipe = (
     beam.Create(pattern.items())
     | OpenWithKerchunk(
-        remote_protocol='s3' if selected_rel == S3_REL else 'https',
+        remote_protocol='s3',
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
