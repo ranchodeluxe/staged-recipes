@@ -221,6 +221,7 @@ class AttachBeginDate(beam.DoFn):
     def process(self, element):
         # Assuming each element is a zarr.Group or similar
         print(type(element))
+        print(type(element[0]))
         import pdb; pdb.set_trace()
         for key, item in element.items():
             if 'BeginDate' in item.attrs:
