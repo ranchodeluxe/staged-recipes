@@ -211,11 +211,11 @@ recipe = (
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
-    | WriteCombinedReference(
-        store_name=SHORT_NAME,
-        concat_dims=pattern.concat_dims,
-        identical_dims=IDENTICAL_DIMS,
-        #precombine_inputs=True,
-    )
     | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-50, 50), 'lon': (-180, 180)})
+    # | WriteCombinedReference(
+    #     store_name=SHORT_NAME,
+    #     concat_dims=pattern.concat_dims,
+    #     identical_dims=IDENTICAL_DIMS,
+    #     #precombine_inputs=True,
+    # )
 )
