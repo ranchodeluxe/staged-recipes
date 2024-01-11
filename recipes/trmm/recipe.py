@@ -200,9 +200,16 @@ pattern = pattern_from_file_sequence(
 
 def get_time_from_attr(index: int, z: zarr.Group, var: str, fn: str):
     import numpy as np
-
     return np.datetime64(z.attrs['BeginDate'])
 
+def get_all_begin_dates(z):
+    begin_dates = []
+    for key, item in z.items():
+        # Check if the item has the 'BeginDate' attribute
+        if 'BeginDate' in item.attrs:
+            begin_date = item.attrs['BeginDate']
+            begin_dates.append(begin_date)
+    return begin_dates
 
 recipe = (
     beam.Create(pattern.items())
@@ -214,7 +221,7 @@ recipe = (
     | CombineReferences(
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
-        mzz_kwargs={'coo_map': {'time': get_time_from_attr}},
+        mzz_kwargs={'coo_map': {'time': get_all_begin_dates}},
     )
     | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
     | WriteCombinedReference(
