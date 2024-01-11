@@ -221,7 +221,7 @@ class AttachBeginDate(beam.DoFn):
     def process(self, zarr_meta):
         import numpy as np
 
-        store = zarr.storage.DictStore(zarr_meta)
+        store = zarr.storage.DictStore(zarr_meta[0])
         z = zarr.open(store, mode='r')
         print(type(z))
 
