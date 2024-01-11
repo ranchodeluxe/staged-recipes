@@ -170,8 +170,7 @@ class ValidateDatasetDimensions(beam.PTransform):
     expected_dims: Dict = field(default_factory=dict)
 
     @staticmethod
-    def _validate(ds: List[Dict[Any, Any]], expected_dims: Dict) -> None:
-        import pdb; pdb.set_trace()
+    def _validate(ds: FSSpecTarget, expected_dims: Dict) -> None:
         if set(ds.dims) != expected_dims.keys():
             raise ValueError(f'Expected dimensions {expected_dims.keys()}, got {ds.dims}')
         for dim, bounds in expected_dims.items():
@@ -212,11 +211,16 @@ recipe = (
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
+    | CombineReferences(
+        concat_dims=pattern.concat_dims,
+        identical_dims=IDENTICAL_DIMS,
+        mzz_kwargs={'coo_map': {'time': get_time_from_attr}},
+    )
+    | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
+    | WriteCombinedReference(
+        store_name=SHORT_NAME,
+        concat_dims=pattern.concat_dims,
+        identical_dims=IDENTICAL_DIMS,
+    )
     | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-50, 50), 'lon': (-180, 180)})
-    # | WriteCombinedReference(
-    #     store_name=SHORT_NAME,
-    #     concat_dims=pattern.concat_dims,
-    #     identical_dims=IDENTICAL_DIMS,
-    #     #precombine_inputs=True,
-    # )
 )
