@@ -171,6 +171,7 @@ class ValidateDatasetDimensions(beam.PTransform):
 
     @staticmethod
     def _validate(ds: List[Dict[Any, Any]], expected_dims: Dict) -> None:
+        import pdb; pdb.set_trace()
         if set(ds.dims) != expected_dims.keys():
             raise ValueError(f'Expected dimensions {expected_dims.keys()}, got {ds.dims}')
         for dim, bounds in expected_dims.items():
