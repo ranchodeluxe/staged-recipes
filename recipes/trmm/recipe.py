@@ -211,6 +211,23 @@ def get_all_begin_dates(z):
             begin_dates.append(begin_date)
     return begin_dates
 
+
+class AddBeginDateToZarrGroup(beam.PTransform):
+    def expand(self, pcoll):
+        # Apply a ParDo to process each element in the pcoll
+        return pcoll | beam.ParDo(AttachBeginDate())
+
+class AttachBeginDate(beam.DoFn):
+    def process(self, element):
+        # Assuming each element is a zarr.Group or similar
+        for key, item in element.items():
+            if 'BeginDate' in item.attrs:
+                begin_date = item.attrs['BeginDate']
+                # Add or update the BeginDate attribute to the element
+                element.attrs['BeginDate'] = begin_date
+        # Return the modified element
+        yield element
+
 recipe = (
     beam.Create(pattern.items())
     | OpenWithKerchunk(
@@ -218,11 +235,7 @@ recipe = (
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
-    | CombineReferences(
-        concat_dims=pattern.concat_dims,
-        identical_dims=IDENTICAL_DIMS,
-        mzz_kwargs={'coo_map': {'time': get_all_begin_dates}},
-    )
+    | AddBeginDateToZarrGroup()
     | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
     | WriteCombinedReference(
         store_name=SHORT_NAME,
