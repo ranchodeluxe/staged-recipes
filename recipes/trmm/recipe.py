@@ -2,7 +2,7 @@ import base64
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Dict, Union
+from typing import Dict, Union, List, Any
 
 import apache_beam as beam
 import requests
@@ -170,7 +170,7 @@ class ValidateDatasetDimensions(beam.PTransform):
     expected_dims: Dict = field(default_factory=dict)
 
     @staticmethod
-    def _validate(ds: FSSpecTarget, expected_dims: Dict) -> None:
+    def _validate(ds: List[Dict[Any, Any]], expected_dims: Dict) -> None:
         if set(ds.dims) != expected_dims.keys():
             raise ValueError(f'Expected dimensions {expected_dims.keys()}, got {ds.dims}')
         for dim, bounds in expected_dims.items():
