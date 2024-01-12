@@ -200,6 +200,8 @@ hacky_way_to_pull = WriteCombinedReference(
     concat_dims=pattern.concat_dims,
     identical_dims=IDENTICAL_DIMS,
 )
+# | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-60, 60), 'lon': (-180, 180)})
+
 recipe = (
     beam.Create(pattern.items())
     | OpenWithKerchunk(
@@ -212,10 +214,9 @@ recipe = (
         identical_dims=IDENTICAL_DIMS,
     )
     | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
-    | WriteReferences(
+    | WriteCombinedReference(
         store_name=SHORT_NAME,
-        target_root=hacky_way_to_pull.target_root,
-        storage_options=pattern.fsspec_open_kwargs,
+        concat_dims=pattern.concat_dims,
+        identical_dims=IDENTICAL_DIMS,
     )
-    | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-60, 60), 'lon': (-180, 180)})
 )
