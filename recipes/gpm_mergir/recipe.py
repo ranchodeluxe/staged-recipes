@@ -34,7 +34,7 @@ CONCAT_DIM = 'time'
 IDENTICAL_DIMS = ['lat', 'lon']
 
 # use HTTP_REL if S3 access is not possible. S3_REL is faster.
-selected_rel = S3_REL
+selected_rel = HTTP_REL
 
 
 def earthdata_auth(username: str, password: str):
