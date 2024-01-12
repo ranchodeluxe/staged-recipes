@@ -218,6 +218,6 @@ recipe = (
         store_name=SHORT_NAME,
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
-        remote_protocol='s3' if selected_rel == S3_REL else 'https'
+        remote_protocol='s3'
     )
 )
