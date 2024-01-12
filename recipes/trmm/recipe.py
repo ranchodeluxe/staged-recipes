@@ -221,13 +221,17 @@ class AttachBeginDate(beam.DoFn):
     def process(self, zarr_meta):
         import numpy as np
 
-        store = zarr.storage.DictStore(zarr_meta[0])
-        z = zarr.open(store, mode='r')
-        print(type(z))
-
-        time_data = np.datetime64(z.attrs['BeginDate'])
-        z['time'].resize(time_data.shape)
-        print(type(z))
+        store1 = zarr.storage.DictStore(zarr_meta)
+        print(store1)
+        store2 = zarr.storage.DictStore(zarr_meta[0])
+        print(store2)
+        zarr_group = zarr.open_group(store2, mode='r')
+        # Create a numpy array with the time_data
+        # Assuming you want an array with just one element containing the BeginDate
+        begin_date = np.datetime64(zarr_group.attrs['BeginDate'])
+        time_data = np.array([begin_date])
+        zarr_group.create_dataset('time_data', data=time_data, shape=time_data.shape, dtype=time_data.dtype)
+        print(type(zarr_group))
         import pdb; pdb.set_trace()
 
         for key, item in zarrgroup.items():
