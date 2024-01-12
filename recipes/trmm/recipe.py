@@ -229,7 +229,10 @@ class AttachBeginDate(beam.DoFn):
         # Create a numpy array with the time_data
         # Assuming you want an array with just one element containing the BeginDate
         begin_date = np.datetime64(zarr_group.attrs['BeginDate'])
-        time_data = np.array([begin_date])
+
+        # make it the shape of lon (get it ;-)
+        lon = zarr_group['lon']
+        time_data = np.full(lon.shape, begin_date)
         zarr_group.create_dataset('time_data', data=time_data, shape=time_data.shape, dtype=time_data.dtype)
         print(type(zarr_group))
         import pdb; pdb.set_trace()
