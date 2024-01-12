@@ -34,7 +34,7 @@ CONCAT_DIM = 'time'
 IDENTICAL_DIMS = ['lat', 'lon']
 
 # use HTTP_REL if S3 access is not possible. S3_REL is faster.
-selected_rel = HTTP_REL
+selected_rel = S3_REL
 
 
 def earthdata_auth(username: str, password: str):
@@ -201,6 +201,11 @@ hacky_way_to_pull = WriteCombinedReference(
     identical_dims=IDENTICAL_DIMS,
 )
 # | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-60, 60), 'lon': (-180, 180)})
+# | CombineReferences(
+#     concat_dims=pattern.concat_dims,
+#     identical_dims=IDENTICAL_DIMS,
+# )
+# | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
 
 recipe = (
     beam.Create(pattern.items())
@@ -209,14 +214,10 @@ recipe = (
         file_type=pattern.file_type,
         storage_options=pattern.fsspec_open_kwargs,
     )
-    | CombineReferences(
-        concat_dims=pattern.concat_dims,
-        identical_dims=IDENTICAL_DIMS,
-    )
-    | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
     | WriteCombinedReference(
         store_name=SHORT_NAME,
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
+        remote_protocol='s3' if selected_rel == S3_REL else 'https'
     )
 )
