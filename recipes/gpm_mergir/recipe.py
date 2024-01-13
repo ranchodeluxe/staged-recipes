@@ -224,6 +224,8 @@ recipe = (
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
         precombine_inputs=True,
+        target_options={"anon": False},
+        remote_options={"anon": False},
         remote_protocol='s3'
     )
 )
