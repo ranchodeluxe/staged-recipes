@@ -195,11 +195,11 @@ pattern = pattern_from_file_sequence(
 
 # target_root is injected only into certain transforms in pangeo-forge-recipes
 # this is a hacky way to pull it out of the WriteCombinedReference transform
-hacky_way_to_pull = WriteCombinedReference(
-    store_name=SHORT_NAME,
-    concat_dims=pattern.concat_dims,
-    identical_dims=IDENTICAL_DIMS,
-)
+# hacky_way_to_pull = WriteCombinedReference(
+#     store_name=SHORT_NAME,
+#     concat_dims=pattern.concat_dims,
+#     identical_dims=IDENTICAL_DIMS,
+# )
 # | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-60, 60), 'lon': (-180, 180)})
 # | CombineReferences(
 #     concat_dims=pattern.concat_dims,
@@ -218,6 +218,5 @@ recipe = (
         store_name=SHORT_NAME,
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
-        remote_protocol='s3'
     )
 )
