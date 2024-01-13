@@ -218,5 +218,11 @@ recipe = (
         store_name=SHORT_NAME,
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
+        precombine_inputs=True,
+        # need ESIP auth for `target_options` here but not
+        # `remote_options` b/c they are dep injected
+        # into `target_root` and public anyhow
+        target_options=pattern.fsspec_open_kwargs,
+        remote_protocol='s3'
     )
 )
