@@ -224,8 +224,6 @@ recipe = (
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
         precombine_inputs=True,
-        target_options=pattern.fsspec_open_kwargs,
-        remote_options=pattern.fsspec_open_kwargs,
         remote_protocol='s3'
     )
 )
