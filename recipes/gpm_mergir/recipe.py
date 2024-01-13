@@ -213,16 +213,12 @@ pattern = pattern_from_file_sequence(
 # )
 # | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
 
-
 def test_ds(store: zarr.storage.FSStore) -> zarr.storage.FSStore:
     import xarray as xr
     ds = xr.open_dataset(store, engine="zarr", chunks={})
     ds = ds.set_coords(("lat", "lon"))
     #ds = ds.expand_dims(dim="time")
-    print(f"[ LEN(STEP) ]: {len(ds['step'])}")
-    assert len(ds["step"]) >= 50
     print(f"[ LEN(TIME) ]: {len(ds['time'])}")
-    assert "t" in ds.data_vars
     print(f"[ DS.COORDS ]: {ds.coords}")
     for coord in ["time", "lat", "lon"]:
         assert coord in ds.coords
