@@ -73,13 +73,18 @@ def filter_data_links(links, rel):
 
 def gen_data_links(rel):
     granules = GranuleQuery().short_name(SHORT_NAME).downloadable(True).get_all()
+    count = 0
     for granule in granules:
         s3_links = filter_data_links(granule['links'], rel)
         first = next(s3_links, None)
         # throw if CMR does not have exactly one S3 link for an item
         if not first or next(s3_links, None) is not None:
             raise ValueError(f"Expected 1 link of type {rel} on {granule['title']}")
+        print(first)
         yield first['href']
+        count += 1
+        if count >= 10:
+            return
 
 
 @dataclass
@@ -219,10 +224,8 @@ recipe = (
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
         precombine_inputs=True,
-        # need ESIP auth for `target_options` here but not
-        # `remote_options` b/c they are dep injected
-        # into `target_root` and public anyhow
-        target_options=pattern.fsspec_open_kwargs,
+        #target_options=pattern.fsspec_open_kwargs,
+        remote_options=pattern.fsspec_open_kwargs,
         remote_protocol='s3'
     )
 )
