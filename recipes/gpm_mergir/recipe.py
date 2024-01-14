@@ -199,6 +199,14 @@ pattern = pattern_from_file_sequence(
     list(gen_data_links(selected_rel)), CONCAT_DIM, fsspec_open_kwargs=fsspec_auth_kwargs
 )
 
+remote_and_target_auth_options = {
+    "anon": False,
+    'client_kwargs': {
+        'aws_access_key_id': os.environ["S3_DEFAULT_AWS_ACCESS_KEY_ID"],
+        'aws_secret_access_key': os.environ["S3_DEFAULT_AWS_SECRET_ACCESS_KEY"],
+    }
+}
+
 # target_root is injected only into certain transforms in pangeo-forge-recipes
 # this is a hacky way to pull it out of the WriteCombinedReference transform
 # hacky_way_to_pull = WriteCombinedReference(
@@ -236,8 +244,8 @@ recipe = (
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
         precombine_inputs=True,
-        target_options={"anon": False},
-        remote_options={"anon": False},
+        target_options=remote_and_target_auth_options,
+        remote_options=remote_and_target_auth_options,
         remote_protocol='s3'
     ) | "Validate" >> beam.Map(test_ds)
 )
