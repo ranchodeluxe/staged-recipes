@@ -84,7 +84,7 @@ def gen_data_links(rel):
         print(first)
         yield first['href']
         count += 1
-        if count >= 10000:
+        if count >= 5000:
             return
 
 
@@ -164,19 +164,6 @@ remote_and_target_auth_options = {
     }
 }
 
-# target_root is injected only into certain transforms in pangeo-forge-recipes
-# this is a hacky way to pull it out of the WriteCombinedReference transform
-# hacky_way_to_pull = WriteCombinedReference(
-#     store_name=SHORT_NAME,
-#     concat_dims=pattern.concat_dims,
-#     identical_dims=IDENTICAL_DIMS,
-# )
-# | ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-60, 60), 'lon': (-180, 180)})
-# | CombineReferences(
-#     concat_dims=pattern.concat_dims,
-#     identical_dims=IDENTICAL_DIMS,
-# )
-# | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
 
 def validate_ds(store: zarr.storage.FSStore) -> zarr.storage.FSStore:
     import xarray as xr
