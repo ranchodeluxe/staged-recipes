@@ -200,10 +200,11 @@ pattern = pattern_from_file_sequence(
 )
 
 remote_and_target_auth_options = {
+    'key': os.environ["S3_DEFAULT_AWS_ACCESS_KEY_ID"],
+    'secret': os.environ["S3_DEFAULT_AWS_SECRET_ACCESS_KEY"],
     "anon": False,
     'client_kwargs': {
-        'aws_access_key_id': os.environ["S3_DEFAULT_AWS_ACCESS_KEY_ID"],
-        'aws_secret_access_key': os.environ["S3_DEFAULT_AWS_SECRET_ACCESS_KEY"],
+        'region_name': 'us-west-2'
     }
 }
 
