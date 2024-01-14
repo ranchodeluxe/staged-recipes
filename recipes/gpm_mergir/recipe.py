@@ -84,7 +84,7 @@ def gen_data_links(rel):
         print(first)
         yield first['href']
         count += 1
-        if count >= 1000:
+        if count >= 10000:
             return
 
 
@@ -118,50 +118,6 @@ class ConsolidateMetadata(beam.PTransform):
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
         return pcoll | beam.Map(self._consolidate, storage_options=self.storage_options)
-
-
-@dataclass
-class WriteReferences(beam.PTransform, ZarrWriterMixin):
-    """Store a singleton PCollection consisting of a ``kerchunk.combine.MultiZarrToZarr`` object.
-
-    :param store_name: Zarr store will be created with this name under ``target_root``.
-    :param output_file_name: Name to give the output references file
-      (``.json`` or ``.parquet`` suffix).
-    """
-
-    store_name: str
-    output_file_name: str = 'reference.json'
-    target_root: Union[str, FSSpecTarget, RequiredAtRuntimeDefault] = field(
-        default_factory=RequiredAtRuntimeDefault
-    )
-    storage_options: Dict = field(default_factory=dict)
-
-    @staticmethod
-    def _write(
-        refs: Dict, full_target: FSSpecTarget, output_file_name: str, storage_options: Dict
-    ) -> Dataset:
-        import fsspec
-        import ujson
-        import xarray as xr
-
-        outpath = full_target._full_path(output_file_name)
-        with full_target.fs.open(outpath, 'wb') as f:
-            f.write(ujson.dumps(refs).encode())
-
-        fs = fsspec.filesystem(
-            'reference', fo=full_target._full_path(output_file_name), remote_options=storage_options
-        )
-        return xr.open_dataset(
-            fs.get_mapper(), engine='zarr', backend_kwargs={'consolidated': True}
-        )
-
-    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
-        return pcoll | beam.Map(
-            self._write,
-            full_target=self.get_full_target(),
-            output_file_name=self.output_file_name,
-            storage_options=self.storage_options,
-        )
 
 
 @dataclass
@@ -222,7 +178,7 @@ remote_and_target_auth_options = {
 # )
 # | ConsolidateMetadata(storage_options=pattern.fsspec_open_kwargs)
 
-def test_ds(store: zarr.storage.FSStore) -> zarr.storage.FSStore:
+def validate_ds(store: zarr.storage.FSStore) -> zarr.storage.FSStore:
     import xarray as xr
     ds = xr.open_dataset(store, engine="zarr", chunks={})
     ds = ds.set_coords(("lat", "lon"))
@@ -248,5 +204,5 @@ recipe = (
         target_options=remote_and_target_auth_options,
         remote_options=remote_and_target_auth_options,
         remote_protocol='s3'
-    ) | "Validate" >> beam.Map(test_ds)
+    ) | "Validate" >> beam.Map(validate_ds)
 )
