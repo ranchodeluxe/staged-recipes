@@ -83,8 +83,6 @@ def gen_data_links(rel):
         if not first or next(s3_links, None) is not None:
             raise ValueError(f"Expected 1 link of type {rel} on {granule['title']}")
         print(first)
-        if '1998022412' in first['href']:
-            continue
         yield first['href']
         count += 1
         if count >= 5000:
