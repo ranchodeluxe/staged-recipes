@@ -85,7 +85,7 @@ def gen_data_links(rel):
         print(first)
         yield first['href']
         count += 1
-        if count >= 1000:
+        if count >= 50:
             return
 
 
