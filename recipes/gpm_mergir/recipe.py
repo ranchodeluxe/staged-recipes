@@ -189,8 +189,5 @@ recipe = (
         concat_dims=pattern.concat_dims,
         identical_dims=IDENTICAL_DIMS,
         precombine_inputs=True,
-        target_options=remote_and_target_auth_options,
-        remote_options=remote_and_target_auth_options,
-        remote_protocol='s3'
     ) | "Validate" >> beam.Map(validate_ds)
 )
