@@ -8,4 +8,4 @@ wheel
 boto3
 python-cmr==0.9.0
 #pangeo-forge-recipes>=0.10.4
-git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@45c7d296761d731228ee9fe6211b0734aa67d074#egg=pangeo-forge-recipes
+git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@13589345fe80a0147e7d188725bb9ad76857d004#egg=pangeo-forge-recipes
