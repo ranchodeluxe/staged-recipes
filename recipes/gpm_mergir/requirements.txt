@@ -8,4 +8,4 @@ wheel
 boto3
 python-cmr==0.9.0
 #pangeo-forge-recipes>=0.10.4
-git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@8dafb15393bd0434fb32c031d6af6ab2d24c3de4#egg=pangeo-forge-recipes
+git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@gcorradini/add_back_context_manager#egg=pangeo-forge-recipes
