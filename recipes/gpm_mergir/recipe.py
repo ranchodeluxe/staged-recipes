@@ -30,7 +30,7 @@ ED_USERNAME = os.environ['EARTHDATA_USERNAME']
 ED_PASSWORD = os.environ['EARTHDATA_PASSWORD']
 
 CREDENTIALS_API = 'https://data.gesdisc.earthdata.nasa.gov/s3credentials'
-SHORT_NAME = 'GPM_MERGIR'
+SHORT_NAME = 'GPM_3IMERGDF'
 CONCAT_DIM = 'time'
 IDENTICAL_DIMS = ['lat', 'lon']
 
