@@ -12,7 +12,7 @@ import zarr
 from requests.auth import HTTPBasicAuth
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
-from pangeo_forge_recipes.transforms import OpenWithKerchunk, WriteCombinedReference
+from pangeo_forge_recipes.transforms import OpenWithKerchunk, WriteCombinedReference, ConsolidateMetadata
 
 ED_USERNAME = os.environ['EARTHDATA_USERNAME']
 ED_PASSWORD = os.environ['EARTHDATA_PASSWORD']
@@ -109,20 +109,6 @@ def earthdata_auth(username: str, password: str):
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
 
 
-# Remove method when https://github.com/pangeo-forge/pangeo-forge-recipes/pull/556/files is merged.
-@beam.ptransform_fn
-def ConsolidateMetadata(pcoll: beam.PCollection) -> beam.PCollection:
-    """Consolidate metadata into a single .zmetadata field.
-    See zarr.consolidate_metadata() for details.
-    """
-
-    def _consolidate(store: zarr.storage.FSStore) -> zarr.storage.FSStore:
-        zarr.consolidate_metadata(store, path=None)
-        return store
-
-    return pcoll | beam.Map(_consolidate)
-
-
 @dataclass
 class ValidateDatasetDimensions(beam.PTransform):
     """Open the reference.json in xarray and validate dimensions."""
@@ -163,9 +149,6 @@ recipe = (
         concat_dims=CONCAT_DIMS,
         identical_dims=IDENTICAL_DIMS,
         store_name=SHORT_NAME,
-        target_options=fsspec_open_kwargs,
-        remote_options=fsspec_open_kwargs,
-        remote_protocol=earthdata_protocol,
     )
     | ConsolidateMetadata()
     | ValidateDatasetDimensions(
