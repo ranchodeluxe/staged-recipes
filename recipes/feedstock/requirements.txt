@@ -1,8 +1,9 @@
 s3fs
 boto3
 requests
-# pangeo-forge-recipes>=0.10.5
-git+https://github.com/norlandrhagen/pangeo-forge-recipes@ndpyramid
+#pangeo-forge-recipes>=0.10.5
+#git+https://github.com/norlandrhagen/pangeo-forge-recipes@ndpyramid
+git+https://github.com/pangeo-forge/pangeo-forge-recipes@ndpyramid_gcorradini
 git+https://github.com/carbonplan/ndpyramid@split-levels
 apache-beam==2.52.0
 xarray==2024.1.1
