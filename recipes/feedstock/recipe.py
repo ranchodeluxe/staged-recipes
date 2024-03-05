@@ -155,51 +155,51 @@ def test_ds(store: zarr.storage.FSStore) -> None:
         print(f'Dimension: {dim}, Length: {size}')
 
 
-# recipe = (
-#     beam.Create(pattern.items())
-#     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
-#     | OpenWithXarray(file_type=pattern.file_type)
-#     | TransposeCoords()
-#     | 'Write Pyramid Levels'
-#     >> StoreToPyramid(
-#         store_name=SHORT_NAME,
-#         epsg_code='4326',
-#         rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-#         n_levels=4,
-#         pyramid_kwargs={'extra_dim': 'nv'},
-#         combine_dims=pattern.combine_dim_keys,
-#     )
-# )
-
-
-#####################################################
-# For running localy:
-target_root_fsspec_kwargs = {
-    "key": os.environ.get("S3_DEFAULT_AWS_ACCESS_KEY_ID"),
-    "secret": os.environ.get("S3_DEFAULT_AWS_SECRET_ACCESS_KEY"),
-    "anon": False,
-    "client_kwargs": {"region_name": "us-west-2"}
-}
-
-import s3fs
-pipeline = beam.Pipeline()
-fs = s3fs.S3FileSystem(**target_root_fsspec_kwargs)
-target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test', target_root_fsspec_kwargs)
-
-pattern = pattern.prune()
-with pipeline as p:
-
-    (p | beam.Create(pattern.items())
+recipe = (
+    beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
     | OpenWithXarray(file_type=pattern.file_type)
     | TransposeCoords()
     | 'Write Pyramid Levels'
     >> StoreToPyramid(
-        target_root=target_root,
         store_name=SHORT_NAME,
         epsg_code='4326',
         rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
         n_levels=4,
         pyramid_kwargs={'extra_dim': 'nv'},
         combine_dims=pattern.combine_dim_keys,
-    ))
+    )
+)
+
+#
+# #####################################################
+# # For running localy:
+# target_root_fsspec_kwargs = {
+#     "key": os.environ.get("S3_DEFAULT_AWS_ACCESS_KEY_ID"),
+#     "secret": os.environ.get("S3_DEFAULT_AWS_SECRET_ACCESS_KEY"),
+#     "anon": False,
+#     "client_kwargs": {"region_name": "us-west-2"}
+# }
+#
+# import s3fs
+# pipeline = beam.Pipeline()
+# fs = s3fs.S3FileSystem(**target_root_fsspec_kwargs)
+# target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test', target_root_fsspec_kwargs)
+#
+# pattern = pattern.prune()
+# with pipeline as p:
+#
+#     (p | beam.Create(pattern.items())
+#     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
+#     | OpenWithXarray(file_type=pattern.file_type)
+#     | TransposeCoords()
+#     | 'Write Pyramid Levels'
+#     >> StoreToPyramid(
+#         target_root=target_root,
+#         store_name=SHORT_NAME,
+#         epsg_code='4326',
+#         rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
+#         n_levels=4,
+#         pyramid_kwargs={'extra_dim': 'nv'},
+#         combine_dims=pattern.combine_dim_keys,
+#     ))
