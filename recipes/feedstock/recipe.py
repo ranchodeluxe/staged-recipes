@@ -183,13 +183,11 @@ target_root_fsspec_kwargs = {
 }
 
 import s3fs
-pipeline = beam.Pipeline()
 fs = s3fs.S3FileSystem(**target_root_fsspec_kwargs)
 target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test', target_root_fsspec_kwargs)
 
 #pattern = pattern.prune()
-p = pipeline()
-
+p = beam.Pipeline(**{'direct_running_mode':'multi_processing'})
 (p | beam.Create(pattern.items())
 | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
 | OpenWithXarray(file_type=pattern.file_type)
@@ -204,5 +202,5 @@ p = pipeline()
     pyramid_kwargs={'extra_dim': 'nv'},
     combine_dims=pattern.combine_dim_keys,
 ))
-print(pipeline._options)
+print(p._options)
 p.run()
