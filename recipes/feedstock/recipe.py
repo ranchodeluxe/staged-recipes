@@ -138,7 +138,7 @@ class TransposeCoords(beam.PTransform):
 
         # Drop time_bnds variable b/c it is missing spatial_dims
         ds = ds.drop('time_bnds')
-        ds = ds["precipitation", "MWprecipitation", "randomError"]
+        ds = ds[["precipitation", "MWprecipitation", "randomError"]]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
