@@ -165,7 +165,7 @@ recipe = (
         store_name=SHORT_NAME,
         epsg_code='4326',
         rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-        n_levels=2,
+        n_levels=1,
         pyramid_kwargs={'extra_dim': 'nv'},
         combine_dims=pattern.combine_dim_keys,
     )
