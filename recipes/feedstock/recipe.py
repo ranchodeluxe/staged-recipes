@@ -186,20 +186,22 @@ pipeline = beam.Pipeline()
 fs = s3fs.S3FileSystem(**target_root_fsspec_kwargs)
 target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test', target_root_fsspec_kwargs)
 
-pattern = pattern.prune()
-with pipeline as p:
+#pattern = pattern.prune()
+p = pipeline()
 
-    (p | beam.Create(pattern.items())
-    | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
-    | OpenWithXarray(file_type=pattern.file_type)
-    | TransposeCoords()
-    | 'Write Pyramid Levels'
-    >> StoreToPyramid(
-        target_root=target_root,
-        store_name=SHORT_NAME,
-        epsg_code='4326',
-        rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-        n_levels=4,
-        pyramid_kwargs={'extra_dim': 'nv'},
-        combine_dims=pattern.combine_dim_keys,
-    ))
+(p | beam.Create(pattern.items())
+| OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
+| OpenWithXarray(file_type=pattern.file_type)
+| TransposeCoords()
+| 'Write Pyramid Levels'
+>> StoreToPyramid(
+    target_root=target_root,
+    store_name=SHORT_NAME,
+    epsg_code='4326',
+    rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
+    n_levels=4,
+    pyramid_kwargs={'extra_dim': 'nv'},
+    combine_dims=pattern.combine_dim_keys,
+))
+print(pipeline._options)
+p.run()
