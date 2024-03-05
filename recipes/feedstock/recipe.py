@@ -138,6 +138,7 @@ class TransposeCoords(beam.PTransform):
 
         # Drop time_bnds variable b/c it is missing spatial_dims
         ds = ds.drop('time_bnds')
+        ds = ds[["precipitation"]]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -199,7 +200,7 @@ p = pipeline()
     store_name=SHORT_NAME,
     epsg_code='4326',
     rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-    n_levels=4,
+    n_levels=2,
     pyramid_kwargs={'extra_dim': 'nv'},
     combine_dims=pattern.combine_dim_keys,
 ))
