@@ -51,7 +51,7 @@ IDENTICAL_DIMS = ['lat', 'lon']
 # 2023/07/3B-DAY.MS.MRG.3IMERG.20230731
 dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2000-06-29', freq='D')
+    for d in pd.date_range('2000-06-01', '2000-06-03', freq='D')
 ]
 
 
@@ -138,6 +138,7 @@ class TransposeCoords(beam.PTransform):
 
         # Drop time_bnds variable b/c it is missing spatial_dims
         ds = ds.drop('time_bnds')
+        ds = ds[["precipitation"]]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -165,7 +166,7 @@ recipe = (
         store_name=SHORT_NAME,
         epsg_code='4326',
         rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-        n_levels=1,
+        n_levels=2,
         pyramid_kwargs={'extra_dim': 'nv'},
         combine_dims=pattern.combine_dim_keys,
     )
