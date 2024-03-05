@@ -177,7 +177,6 @@ def test_ds(store: zarr.storage.FSStore) -> None:
 target_root_fsspec_kwargs = {
     "key": os.environ.get("S3_DEFAULT_AWS_ACCESS_KEY_ID"),
     "secret": os.environ.get("S3_DEFAULT_AWS_SECRET_ACCESS_KEY"),
-    "region_name": "us-west-2",
     "anon": False,
     "client_kwargs": {"region_name": "us-west-2"}
 }
@@ -185,7 +184,7 @@ target_root_fsspec_kwargs = {
 import s3fs
 pipeline = beam.Pipeline()
 fs = s3fs.S3FileSystem(**target_root_fsspec_kwargs)
-target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test')
+target_root = FSSpecTarget(fs, 's3://gcorradini-forge-runner-test', target_root_fsspec_kwargs)
 
 pattern = pattern.prune()
 with pipeline as p:
