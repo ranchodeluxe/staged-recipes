@@ -40,7 +40,7 @@ IDENTICAL_DIMS = ['lat', 'lon']
 # 2023/07/3B-DAY.MS.MRG.3IMERG.20230731
 dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2000-08-01', freq='D')
+    for d in pd.date_range('2000-06-01', '2000-06-10', freq='D')
 ]
 #2014-01-01
 
@@ -122,7 +122,12 @@ class DropVarCoord(beam.PTransform):
 
     @staticmethod
     def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
+        import logging
+        logger = logging.getLogger(__name__)
+        from pprint import pprint
+
         index, ds = item
+        logger.warning(f"[ _dropvarcoord index ]: {pprint(index)}")
         # Removing time_bnds since it doesn't have spatial dims
         ds = ds.drop_vars('time_bnds')
         ds = ds[['precipitation']]
@@ -139,7 +144,12 @@ class TransposeCoords(beam.PTransform):
 
     @staticmethod
     def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
+        import logging
+        logger = logging.getLogger(__name__)
+        from pprint import pprint
+
         index, ds = item
+        logger.warning(f"[ _transpose_coords index ]: {pprint(index)}")
         ds = ds.transpose('time', 'lat', 'lon', 'nv')
         return index, ds
 
