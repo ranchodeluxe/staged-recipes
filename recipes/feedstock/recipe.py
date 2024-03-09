@@ -1,4 +1,4 @@
-# AWS_PROFILE=devseed pangeo-forge-runner bake \
+# pangeo-forge-runner bake \
 # --repo=~/Documents/carbonplan/pangeo_forge/staged-recipes/recipes/ \
 # -f ~/Documents/carbonplan/pangeo_forge/staged-recipes/recipes/feedstock/config.py \
 # --Bake.recipe_id=GPM_3IMERGDF.07 \
@@ -17,11 +17,11 @@ from requests.auth import HTTPBasicAuth
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
 from pangeo_forge_recipes.transforms import (
+    ConsolidateMetadata,
     Indexed,
     OpenURLWithFSSpec,
     OpenWithXarray,
     StoreToPyramid,
-    StoreToZarr
 )
 
 ED_USERNAME = os.environ['EARTHDATA_USERNAME']
@@ -42,11 +42,12 @@ dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
     for d in pd.date_range('2000-06-01', '2000-06-21', freq='D')
 ]
-#2014-01-01
+
 
 def make_filename(time):
     if earthdata_protocol == 'https':
-        # https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGDF.07/2023/07/3B-DAY.MS.MRG.3IMERG.20230731-S000000-E235959.V07B.nc4
+        # https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGDF.07/2023/07/3B-DAY
+        # .MS.MRG.3IMERG.20230731-S000000-E235959.V07B.nc4
         base_url = f'https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/{SHORT_NAME}/'
     else:
         base_url = f's3://gesdisc-cumulus-prod-protected/GPM_L3/{SHORT_NAME}/'
@@ -131,8 +132,6 @@ class DropVarCoord(beam.PTransform):
         # Removing time_bnds since it doesn't have spatial dims
         ds = ds.drop_vars('time_bnds')
         ds = ds[['precipitation']]
-
-        # ds = ds[['precipitation','MWprecipitation','randomError']]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -221,3 +220,5 @@ recipe = (
 #         pyramid_kwargs={'extra_dim': 'nv'},
 #         combine_dims=pattern.combine_dim_keys,
 #     ))
+
+
