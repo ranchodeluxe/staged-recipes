@@ -40,7 +40,7 @@ IDENTICAL_DIMS = ['lat', 'lon']
 # 2023/07/3B-DAY.MS.MRG.3IMERG.20230731
 dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2000-12-01', freq='D')
+    for d in pd.date_range('2000-06-01', '2014-06-01', freq='D')
 ]
 
 
@@ -157,7 +157,7 @@ class TransposeCoords(beam.PTransform):
 
 
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
-fsspec_open_kwargs |= {"default_cache_type": "none"}
+#fsspec_open_kwargs |= {"default_cache_type": "none"}
 
 
 recipe = (
