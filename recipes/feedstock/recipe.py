@@ -157,6 +157,7 @@ class TransposeCoords(beam.PTransform):
 
 
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
+fsspec_open_kwargs |= {"default_cache_type": "none"}
 
 
 recipe = (
