@@ -163,7 +163,7 @@ fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
-    | OpenWithXarray(file_type=pattern.file_type, load=True)
+    | OpenWithXarray(file_type=pattern.file_type, load=False)
     | TransposeCoords()
     | DropVarCoord()
     | 'Write Pyramid Levels'
