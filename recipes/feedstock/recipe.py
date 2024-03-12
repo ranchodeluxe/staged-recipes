@@ -162,6 +162,12 @@ fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
 
 recipe = (
     beam.Create(pattern.items())
+    | OpenWithXarray(
+        file_type=pattern.file_type,
+        load=False,
+        fsspec_open_kwargs=fsspec_open_kwargs,
+        xarray_open_kwargs={"engine": "h5netcdf"}
+    )
     | 'Write Pyramid Levels'
     >> StoreToPyramid(
         store_name=SHORT_NAME,
