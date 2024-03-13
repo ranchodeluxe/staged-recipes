@@ -149,7 +149,7 @@ class BurnItAllDown(beam.PTransform):
         import xarray
         index, url = item
         with fsspec.open(url, mode='rb', **fsspec_kwargs) as open_file:
-            ds = xarray.open(open_file, engine='h5netcdf')
+            ds = xarray.open_dataset(open_file, engine='h5netcdf')
             ds = ds.drop_vars('time_bnds')
             ds = ds[['precipitation']]
             return index, ds
