@@ -167,8 +167,8 @@ class BurnItAllDownAgain(beam.PTransform):
         import xarray
         index, ds = item
         ds = xarray.Dataset(attrs=ds.attrs)
-        ds = ds.drop_vars('time_bnds')
-        ds = ds[['precipitation']]
+        ds.items()
+        ds.load()
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
