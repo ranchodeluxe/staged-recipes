@@ -24,6 +24,8 @@ from pangeo_forge_recipes.transforms import (
     OpenWithXarray,
     StoreToPyramid,
 )
+import logging
+logger = logging.getLogger(__name__)
 
 ED_USERNAME = os.environ['EARTHDATA_USERNAME']
 ED_PASSWORD = os.environ['EARTHDATA_PASSWORD']
@@ -169,6 +171,7 @@ class BurnItAllDownAgain(beam.PTransform):
         ds = xarray.Dataset(attrs=ds.attrs)
         ds.items()
         ds.load()
+        logger.warning(f'[ END ]')
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
