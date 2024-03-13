@@ -171,6 +171,8 @@ class BurnItAllDownAgain(beam.PTransform):
         ds = xarray.Dataset(attrs=ds.attrs)
         ds.items()
         ds.load()
+        if index.find_position('time') >= 60:
+            raise Exception("Please Halt!")
         logger.warning(f'[ END ]')
         return index, ds
 
