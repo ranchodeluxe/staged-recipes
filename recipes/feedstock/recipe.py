@@ -8,6 +8,7 @@
 import base64
 import json
 import os
+from dataclasses import dataclass
 
 import apache_beam as beam
 import pandas as pd
@@ -138,39 +139,54 @@ class DropVarCoord(beam.PTransform):
         return pcoll | beam.Map(self._dropvarcoord)
 
 
-class TransposeCoords(beam.PTransform):
-    """Transform to transpose coordinates for pyramids and drop time_bnds variable"""
+@dataclass
+class BurnItAllDown(beam.PTransform):
+    fsspec_kwargs: {}
 
     @staticmethod
-    def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
-        import logging
-        logger = logging.getLogger(__name__)
-        from pprint import pprint
+    def burn_it_down(item: Indexed[str], fsspec_kwargs) -> Indexed[xr.Dataset]:
+        import fsspec
+        import xarray
+        index, url = item
+        with fsspec.open(url, mode='rb', **fsspec_kwargs) as open_file:
+            ds = xarray.open(open_file, engine='h5netcdf')
+            ds = ds.drop_vars('time_bnds')
+            ds = ds[['precipitation']]
+            return index, ds
 
+    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
+        return pcoll | beam.Map(self.burn_it_down, fsspec_kwargs=self.fsspec_kwargs)
+
+
+@dataclass
+class BurnItAllDownAgain(beam.PTransform):
+    fsspec_kwargs: {}
+
+    @staticmethod
+    def burn_it_down(item: Indexed[xr.Dataset], fsspec_kwargs) -> Indexed[xr.Dataset]:
+        import xarray
         index, ds = item
-        logger.warning(f"[ _transpose_coords index ]: {pprint(index)}")
-        ds = ds.transpose('time', 'lat', 'lon', 'nv')
+        ds = xarray.Dataset(attrs=ds.attrs)
+        ds = ds.drop_vars('time_bnds')
+        ds = ds[['precipitation']]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
-        return pcoll | beam.Map(self._transpose_coords)
+        return pcoll | beam.Map(self.burn_it_down, fsspec_kwargs=self.fsspec_kwargs)
 
 
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
-#fsspec_open_kwargs |= {"default_cache_type": "none"}
 
 
 recipe = (
     beam.Create(pattern.items())
-    | 'Write Pyramid Levels'
-    >> StoreToPyramid(
-        store_name=SHORT_NAME,
-        epsg_code='4326',
-        rename_spatial_dims={'lon': 'longitude', 'lat': 'latitude'},
-        n_levels=2,
-        pyramid_kwargs={'extra_dim': 'nv'},
+    | 'Burn it Down'
+    >> BurnItAllDown(
         fsspec_kwargs=fsspec_open_kwargs,
-        combine_dims=pattern.combine_dim_keys,
+    )
+    | 'Burn it Down Twice'
+    >> BurnItAllDownAgain(
+        fsspec_kwargs=fsspec_open_kwargs,
     )
 )
 
