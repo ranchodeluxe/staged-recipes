@@ -172,7 +172,7 @@ class BurnItAllDownAgain(beam.PTransform):
         ds.items()
         ds.load()
         if index.find_position('time') >= 60:
-            raise Exception("Please Halt!")
+            ds = ds.drop_vars('time_bnds')
         logger.warning(f'[ END ]')
         return index, ds
 
