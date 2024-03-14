@@ -22,14 +22,10 @@ def make_filename(time):
 concat_dim = ConcatDim('time', dates, nitems_per_file=1)
 pattern = FilePattern(make_filename, concat_dim)
 
-print("##########################################")
-print(os.environ.get("AWS_ACCESS_KEY_ID"))
-print(os.environ.get("AWS_SECRET_ACCESS_KEY"))
-
 fsspec_kwargs = {
     "key": os.environ.get("AWS_ACCESS_KEY_ID"),
     "secret": os.environ.get("AWS_SECRET_ACCESS_KEY"),
-    "anon": True
+    "anon": False
 }
 
 recipe = (
