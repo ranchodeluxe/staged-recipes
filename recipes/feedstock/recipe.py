@@ -22,20 +22,20 @@ def make_filename(time):
 concat_dim = ConcatDim('time', dates, nitems_per_file=1)
 pattern = FilePattern(make_filename, concat_dim)
 
+print("##########################################")
+print(os.environ.get("AWS_ACCESS_KEY_ID"))
+print(os.environ.get("AWS_SECRET_ACCESS_KEY"))
+
 fsspec_kwargs = {
     "key": os.environ.get("AWS_ACCESS_KEY_ID"),
     "secret": os.environ.get("AWS_SECRET_ACCESS_KEY"),
     "anon": True
 }
 
-xarray_open_kwargs = {
-    "storage_options": fsspec_kwargs
-}
-
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_kwargs)
-    | OpenWithXarray(xarray_open_kwargs=xarray_open_kwargs)
+    | OpenWithXarray()
     | StoreToZarr(
         store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
