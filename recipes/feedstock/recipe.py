@@ -30,7 +30,7 @@ fsspec_kwargs = {
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_kwargs)
-    | OpenWithXarray()
+    | OpenWithXarray(xarray_open_kwargs=fsspec_kwargs)
     | StoreToZarr(
         store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
