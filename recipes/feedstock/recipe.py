@@ -10,7 +10,7 @@ from pangeo_forge_recipes.transforms import (
 
 dates = [
     d.to_pydatetime().strftime('_%Y_%m_3b-day.ms.mrg.3imerg.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2010-01-01', freq='D')
+    for d in pd.date_range('2000-06-01', '2005-06-01', freq='D')
 ]
 
 def make_filename(time):
@@ -25,7 +25,7 @@ pattern = FilePattern(make_filename, concat_dim)
 fsspec_kwargs = {
     "key": os.environ.get("AWS_ACCESS_KEY_ID"),
     "secret": os.environ.get("AWS_SECRET_ACCESS_KEY"),
-    "anon": True
+    "anon": False
 }
 
 recipe = (
