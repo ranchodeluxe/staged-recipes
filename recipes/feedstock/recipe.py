@@ -5,7 +5,6 @@ import os
 import apache_beam as beam
 import pandas as pd
 import requests
-import xarray as xr
 from requests.auth import HTTPBasicAuth
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
@@ -109,45 +108,14 @@ def earthdata_auth(username: str, password: str):
         return {'headers': {'Authorization': f'Bearer {token}'}}
 
 
-class DropVarCoord(beam.PTransform):
-    """Drops non-viz variables & time_bnds."""
-
-    @staticmethod
-    def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
-        index, ds = item
-        # Removing time_bnds since it doesn't have spatial dims
-        ds = ds.drop_vars('time_bnds')
-        ds = ds[['precipitation']]
-        return index, ds
-
-    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
-        return pcoll | beam.Map(self._dropvarcoord)
-
-
-class TransposeCoords(beam.PTransform):
-    """Transform to transpose coordinates for pyramids and drop time_bnds variable"""
-
-    @staticmethod
-    def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
-        index, ds = item
-        ds = ds.transpose('time', 'lat', 'lon', 'nv')
-        return index, ds
-
-    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
-        return pcoll | beam.Map(self._transpose_coords)
-
-
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
-
 
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
     | OpenWithXarray(file_type=pattern.file_type)
-    | TransposeCoords()
-    | DropVarCoord()
     | StoreToZarr(
-        store_name="gpm.zarr",
+        store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
     )
 )
