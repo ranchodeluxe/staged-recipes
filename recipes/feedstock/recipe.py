@@ -64,8 +64,6 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_kwargs)
     | OpenWithXarray()
-    | TransposeCoords()
-    | DropVarCoord()
     | StoreToZarr(
         store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
