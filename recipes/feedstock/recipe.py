@@ -140,13 +140,6 @@ class TransposeCoords(beam.PTransform):
 
 #fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
 
-sts_client = boto3.client('sts')
-response = sts_client.get_caller_identity()
-print("##################")
-print(response)
-print("##################")
-
-
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
