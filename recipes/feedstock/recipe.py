@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import boto3
 
 import apache_beam as beam
 import pandas as pd
@@ -138,6 +139,12 @@ class TransposeCoords(beam.PTransform):
 
 
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
+
+sts_client = boto3.client('sts')
+response = sts_client.get_caller_identity()
+print("##################")
+print(response)
+print("##################")
 
 
 recipe = (
