@@ -28,7 +28,7 @@ pattern = FilePattern(make_filename, concat_dim)
 fsspec_kwargs = {
     "key": os.environ.get("AWS_ACCESS_KEY_ID"),
     "secret": os.environ.get("AWS_SECRET_ACCESS_KEY"),
-    "anon": False
+    "anon": True
 }
 
 
