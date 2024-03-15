@@ -2,8 +2,9 @@ import apache_beam as beam
 import pandas as pd
 import os
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
-from pangeo_forge_recipes.types import Indexed
+import xarray as xr
 from pangeo_forge_recipes.transforms import (
+    Indexed,
     OpenURLWithFSSpec,
     OpenWithXarray,
     StoreToZarr,
@@ -63,6 +64,8 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_kwargs)
     | OpenWithXarray()
+    | DropVarCoord()
+    | TransposeCoords()
     | StoreToZarr(
         store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
