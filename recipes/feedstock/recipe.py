@@ -13,7 +13,6 @@ from pangeo_forge_recipes.transforms import (
     Indexed,
     OpenURLWithFSSpec,
     OpenWithXarray,
-    StoreToPyramid,
     StoreToZarr
 )
 
