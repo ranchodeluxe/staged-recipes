@@ -20,8 +20,8 @@ from pangeo_forge_recipes.transforms import (
 ED_USERNAME = os.environ['EARTHDATA_USERNAME']
 ED_PASSWORD = os.environ['EARTHDATA_PASSWORD']
 
-#earthdata_protocol = 's3'
-earthdata_protocol = 'https'
+earthdata_protocol = 's3'
+#earthdata_protocol = 'https'
 if earthdata_protocol not in ('https', 's3'):
     raise ValueError(f'Unknown ED_PROTOCOL: {earthdata_protocol}')
 
@@ -138,7 +138,7 @@ class TransposeCoords(beam.PTransform):
         return pcoll | beam.Map(self._transpose_coords)
 
 
-fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
+#fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
 
 sts_client = boto3.client('sts')
 response = sts_client.get_caller_identity()
