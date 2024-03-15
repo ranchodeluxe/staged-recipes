@@ -46,7 +46,7 @@ class TransposeCoords(beam.PTransform):
     @staticmethod
     def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
-        ds = ds.transpose('time', 'lat', 'lon')
+        ds = ds.transpose('time', 'lat', 'lon', 'nv')
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -64,8 +64,8 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_kwargs)
     | OpenWithXarray()
-    | DropVarCoord()
     | TransposeCoords()
+    | DropVarCoord()
     | StoreToZarr(
         store_name="test.zarr",
         combine_dims=pattern.combine_dim_keys,
