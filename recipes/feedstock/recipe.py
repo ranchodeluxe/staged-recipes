@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Tuple, List
+from typing import Tuple, List, NewType
 
 import apache_beam as beam
 import pandas as pd
 import xarray as xr
+import fsspec
 import zarr
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
@@ -37,6 +38,8 @@ concat_dim = ConcatDim('time', dates, nitems_per_file=1)
 pattern = FilePattern(make_filename, concat_dim)
 
 
+Url = NewType('Url', str)
+
 @dataclass
 class Example(beam.PTransform):
     """just the first couple of steps
@@ -46,10 +49,13 @@ class Example(beam.PTransform):
 
     def expand(
         self,
-        datasets: beam.PCollection[Tuple[Index, xr.Dataset]],
+        urls: beam.PCollection[Tuple[Index, Url]],
     ) -> beam.PCollection[zarr.storage.FSStore]:
-        schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
-        indexed_datasets = datasets | IndexItems(schema=schema)
+        with fsspec.open(Url, mode="rb") as open_fs:
+            ds = xr.open_dataset(open_fs, engine='h5netcdf')
+            # NOTE: all of these operations should be able to use the lazy ds
+            schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
+            indexed_datasets = datasets | IndexItems(schema=schema)
         singleton = (
                 indexed_datasets
                 | beam.combiners.Sample.FixedSizeGlobally(1)
@@ -60,8 +66,6 @@ class Example(beam.PTransform):
 
 recipe = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec()
-    | OpenWithXarray(file_type=pattern.file_type)
     | Example(
         combine_dims=pattern.combine_dim_keys,
     )
