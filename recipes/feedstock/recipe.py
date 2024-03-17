@@ -38,8 +38,6 @@ concat_dim = ConcatDim('time', dates, nitems_per_file=1)
 pattern = FilePattern(make_filename, concat_dim)
 
 
-Url = NewType('Url', str)
-
 @dataclass
 class Example(beam.PTransform):
     """just the first couple of steps of StoreToZarr to prove a point and singleton reduce
@@ -55,7 +53,7 @@ class Example(beam.PTransform):
 
     def expand(
         self,
-        urls: beam.PCollection[Tuple[Index, Url]],
+        urls: beam.PCollection[Tuple[Index, str]],
     ) -> beam.PCollection[zarr.storage.FSStore]:
             datasets = urls | beam.Map(self.opener)
             schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
