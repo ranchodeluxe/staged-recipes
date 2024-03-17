@@ -57,7 +57,6 @@ class Example(beam.PTransform):
         self,
         urls: beam.PCollection[Tuple[Index, Url]],
     ) -> beam.PCollection[zarr.storage.FSStore]:
-            # NOTE: all operations below just use the lazy metadata
             datasets = urls | beam.Map(self.opener)
             schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
             indexed_datasets = datasets | IndexItems(schema=schema)
