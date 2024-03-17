@@ -7,7 +7,7 @@ import xarray as xr
 import zarr
 
 from pangeo_forge_recipes.patterns import ConcatDim, FilePattern
-from pangeo_forge_recipes.typing import Index, Dimension
+from pangeo_forge_recipes.types import Index, Dimension
 from pangeo_forge_recipes.transforms import (
     DetermineSchema,
     IndexItems,
