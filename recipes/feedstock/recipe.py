@@ -42,8 +42,7 @@ Url = NewType('Url', str)
 
 @dataclass
 class Example(beam.PTransform):
-    """just the first couple of steps
-    of StoreToZarr to prove a point and singleton reduce
+    """just the first couple of steps of StoreToZarr to prove a point and singleton reduce
     """
     combine_dims: List[Dimension]
 
@@ -62,12 +61,12 @@ class Example(beam.PTransform):
             datasets = urls | beam.Map(self.opener)
             schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
             indexed_datasets = datasets | IndexItems(schema=schema)
-            reduced_singleton = (
+            singleton = (
                     indexed_datasets
                     | beam.combiners.Sample.FixedSizeGlobally(1)
                     | beam.FlatMap(lambda x: x)
             )
-            return reduced_singleton
+            return singleton
 
 
 recipe = (
