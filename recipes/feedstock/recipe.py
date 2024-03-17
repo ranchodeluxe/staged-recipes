@@ -47,21 +47,27 @@ class Example(beam.PTransform):
     """
     combine_dims: List[Dimension]
 
+    @staticmethod
+    def opener(item) -> xr.Dataset:
+        index, url = item
+        with fsspec.open(url, mode="rb") as open_fs:
+            ds = xr.open_dataset(open_fs, engine='h5netcdf')
+        return index, ds
+
     def expand(
         self,
         urls: beam.PCollection[Tuple[Index, Url]],
     ) -> beam.PCollection[zarr.storage.FSStore]:
-        with fsspec.open(Url, mode="rb") as open_fs:
-            ds = xr.open_dataset(open_fs, engine='h5netcdf')
-            # NOTE: all of these operations should be able to use the lazy ds
+            # NOTE: all operations below just use the lazy metadata
+            datasets = urls | beam.Map(self.opener)
             schema = datasets | DetermineSchema(combine_dims=self.combine_dims)
             indexed_datasets = datasets | IndexItems(schema=schema)
-        singleton = (
-                indexed_datasets
-                | beam.combiners.Sample.FixedSizeGlobally(1)
-                | beam.FlatMap(lambda x: x)
-        )
-        return singleton
+            reduced_singleton = (
+                    indexed_datasets
+                    | beam.combiners.Sample.FixedSizeGlobally(1)
+                    | beam.FlatMap(lambda x: x)
+            )
+            return reduced_singleton
 
 
 recipe = (
