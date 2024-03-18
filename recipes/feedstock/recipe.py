@@ -38,9 +38,6 @@ class DropVarCoord(beam.PTransform):
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
         ds = ds.drop_vars('time_bnds')  # b/c it points to nv dimension
-        # then try squeezing it
-        ds = ds.squeeze('nv', drop=True)
-        # only select precipitation
         ds = ds[['precipitation']]
         return index, ds
 
@@ -54,7 +51,7 @@ class TransposeCoords(beam.PTransform):
     @staticmethod
     def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
-        ds = ds.transpose('time', 'lat', 'lon', 'nv')
+        ds = ds.transpose('time', 'lat', 'lon')
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -69,6 +66,7 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
+    | DropVarCoord()
     | TransposeCoords()
     | beam.Map(print_and_return)
     | StoreToZarr(
