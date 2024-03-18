@@ -37,7 +37,10 @@ class DropVarCoord(beam.PTransform):
     def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
-        ds = ds.drop_vars(['time_bnds', 'nv'])
+        ds = ds.drop_vars('time_bnds')  # b/c it points to nv dimension
+        # then try squeezing it
+        ds = ds.squeeze('nv', drop=True)
+        # only select precipitation
         ds = ds[['precipitation']]
         return index, ds
 
