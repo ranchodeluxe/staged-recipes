@@ -125,8 +125,11 @@ class DropVarCoord(beam.PTransform):
     def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
-        ds = ds.drop_vars('time_bnds')
-        ds = ds[['precipitation']]
+        # And removing an int8 variables
+        ds = ds.drop_vars(['time_bnds', 'MWprecipitation_cnt_cond', 'MWprecipitation_cnt',
+                           'precipitation_cnt', 'precipitation_cnt_cond',
+                           'probabilityLiquidPrecipitation', 'randomError_cnt'])
+        #ds = ds[['precipitation']]
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
@@ -153,6 +156,7 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec(open_kwargs=fsspec_open_kwargs)
     | OpenWithXarray(file_type=pattern.file_type)
+    | TransposeCoords()
     | DropVarCoord()
     | 'Write Pyramid Levels'
     >> StoreToPyramid(
