@@ -62,7 +62,7 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
-    | DropVarCoord()
+    | TransposeCoords()
     | StoreToZarr(
         store_name="gpm.zarr",
         combine_dims=pattern.combine_dim_keys,
