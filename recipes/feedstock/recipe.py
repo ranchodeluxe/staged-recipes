@@ -37,7 +37,7 @@ class DropVarCoord(beam.PTransform):
     def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
-        ds = ds.drop_vars('time_bnds')
+        ds = ds.drop_vars(['time_bnds', 'nv'])
         ds = ds[['precipitation']]
         return index, ds
 
@@ -51,7 +51,6 @@ class TransposeCoords(beam.PTransform):
     @staticmethod
     def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
-        ds = ds.drop('nv')
         ds = ds.transpose('time', 'lat', 'lon')
         return index, ds
 
