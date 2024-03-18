@@ -126,7 +126,7 @@ class DropVarCoord(beam.PTransform):
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
         # And removing an int8 variables
-        ds = ds.drop_vars(['MWprecipitation', 'MWprecipitation_cnt_cond', 'MWprecipitation_cnt',
+        ds = ds.drop_vars(['time_bnds', 'MWprecipitation', 'MWprecipitation_cnt_cond', 'MWprecipitation_cnt',
                            'precipitation_cnt', 'precipitation_cnt_cond',
                            'probabilityLiquidPrecipitation', 'randomError','randomError_cnt'])
         #ds = ds[['precipitation']]
