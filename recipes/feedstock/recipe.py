@@ -30,10 +30,39 @@ concat_dim = ConcatDim('time', dates, nitems_per_file=1)
 pattern = FilePattern(make_filename, concat_dim)
 
 
+class DropVarCoord(beam.PTransform):
+    """Drops non-viz variables & time_bnds."""
+
+    @staticmethod
+    def _dropvarcoord(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
+        index, ds = item
+        # Removing time_bnds since it doesn't have spatial dims
+        ds = ds.drop_vars('time_bnds')
+        ds = ds[['precipitation']]
+        return index, ds
+
+    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
+        return pcoll | beam.Map(self._dropvarcoord)
+
+
+class TransposeCoords(beam.PTransform):
+    """Transform to transpose coordinates for pyramids and drop time_bnds variable"""
+
+    @staticmethod
+    def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
+        index, ds = item
+        ds = ds.transpose('time', 'lat', 'lon', 'nv')
+        return index, ds
+
+    def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
+        return pcoll | beam.Map(self._transpose_coords)
+
+
 recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
+    | DropVarCoord()
     | StoreToZarr(
         store_name="gpm.zarr",
         combine_dims=pattern.combine_dim_keys,
