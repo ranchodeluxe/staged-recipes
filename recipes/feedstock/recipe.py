@@ -40,7 +40,7 @@ IDENTICAL_DIMS = ['lat', 'lon']
 # 2023/07/3B-DAY.MS.MRG.3IMERG.20230731
 dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2003-06-01', freq='D')
+    for d in pd.date_range('2000-06-01', '2002-06-01', freq='D')
 ]
 
 
@@ -126,9 +126,9 @@ class DropVarCoord(beam.PTransform):
         index, ds = item
         # Removing time_bnds since it doesn't have spatial dims
         # And removing an int8 variables
-        ds = ds.drop_vars(['time_bnds', 'MWprecipitation_cnt_cond', 'MWprecipitation_cnt',
+        ds = ds.drop_vars(['MWprecipitation', 'MWprecipitation_cnt_cond', 'MWprecipitation_cnt',
                            'precipitation_cnt', 'precipitation_cnt_cond',
-                           'probabilityLiquidPrecipitation', 'randomError_cnt'])
+                           'probabilityLiquidPrecipitation', 'randomError','randomError_cnt'])
         #ds = ds[['precipitation']]
         return index, ds
 
