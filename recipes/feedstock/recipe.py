@@ -7,7 +7,7 @@ from pangeo_forge_recipes.transforms import (
     Indexed,
     OpenURLWithFSSpec,
     OpenWithXarray,
-    StoreToZarr
+    StoreToZarrUgly
 )
 
 SHORT_NAME = 'GPM_3IMERGDF.07'
@@ -64,11 +64,7 @@ def print_and_return(x):
 
 recipe = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec()
-    | OpenWithXarray(file_type=pattern.file_type)
-    | TransposeCoords()
-    | beam.Map(print_and_return)
-    | StoreToZarr(
+    | StoreToZarrUgly(
         store_name="gpm.zarr",
         combine_dims=pattern.combine_dim_keys,
     )
