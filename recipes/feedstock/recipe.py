@@ -67,5 +67,7 @@ recipe = (
     | StoreToZarrUgly(
         store_name="gpm.zarr",
         combine_dims=pattern.combine_dim_keys,
+        fsspec_kwargs={},
+        xarray_kwargs={"engine": "h5netcdf"}
     )
 )
