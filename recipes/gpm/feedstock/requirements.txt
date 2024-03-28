@@ -1,4 +1,4 @@
-git+https://github.com/ranchodeluxe/filesystem_spec@main
+git+https://github.com/ranchodeluxe/filesystem_spec@master
 s3fs
 boto3
 requests
