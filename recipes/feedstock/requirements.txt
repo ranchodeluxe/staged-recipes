@@ -1,7 +1,7 @@
 s3fs
 boto3
 requests
-pangeo-forge-recipes>=0.10.5
+git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/cache_disabled
 apache-beam==2.52.0
 xarray==2024.1.1
 zarr==2.16.1
