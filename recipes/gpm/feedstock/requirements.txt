@@ -2,6 +2,7 @@ git+https://github.com/ranchodeluxe/xarray@ranchodeluxe-patch-1
 s3fs
 boto3
 requests
+git+https://github.com/ranchodeluxe/datatree@main#egg=xarray-datatree
 git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/ndpyramid_final
 git+https://github.com/carbonplan/ndpyramid
 apache-beam==2.52.0
