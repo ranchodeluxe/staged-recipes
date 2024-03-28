@@ -1,3 +1,4 @@
+git+https://github.com/ranchodeluxe/xarray@ranchodeluxe-patch-1
 s3fs
 boto3
 requests
