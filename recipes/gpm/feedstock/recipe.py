@@ -64,6 +64,7 @@ recipe = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
+    | DropVarCoord()
     | TransposeCoords()
     | 'Write Pyramid Levels'
     >> StoreToPyramid(
