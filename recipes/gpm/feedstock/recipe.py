@@ -62,7 +62,7 @@ class TransposeCoords(beam.PTransform):
 
 recipe = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec(open_kwargs={"cache_type": "none"})
+    | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
     | TransposeCoords()
     | 'Write Pyramid Levels'
