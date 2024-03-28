@@ -52,7 +52,7 @@ class TransposeCoords(beam.PTransform):
     @staticmethod
     def _transpose_coords(item: Indexed[xr.Dataset]) -> Indexed[xr.Dataset]:
         index, ds = item
-        ds = ds.transpose('time', 'lat', 'lon', 'nv')
+        ds = ds.transpose('time', 'lat', 'lon')
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
