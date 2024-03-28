@@ -146,6 +146,7 @@ class TransposeCoords(beam.PTransform):
 
 
 fsspec_open_kwargs = earthdata_auth(ED_USERNAME, ED_PASSWORD)
+fsspec_open_kwargs["cache_type"] = "none"
 
 
 def test_ds(store: zarr.storage.FSStore) -> None:
