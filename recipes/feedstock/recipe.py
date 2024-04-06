@@ -64,7 +64,6 @@ def print_and_return(x):
 
 recipe = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
     | beam.Map(print_and_return)
     | StoreToZarr(
