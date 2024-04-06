@@ -65,8 +65,8 @@ def print_and_return(x):
 
 recipe = (
     beam.Create(pattern.items())
-    | OpenWithXarray(file_type=pattern.file_type)
     | beam.Map(print_and_return)
+    | OpenWithXarray(file_type=pattern.file_type)
     | StoreToZarr(
         store_name="gpm.zarr",
         combine_dims=pattern.combine_dim_keys,
