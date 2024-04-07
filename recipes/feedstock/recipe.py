@@ -8,7 +8,6 @@ from pangeo_forge_recipes.transforms import (
     OpenURLWithFSSpec,
     OpenWithXarray,
     StoreToZarr,
-    OpenWithBeamS3IO
 )
 
 SHORT_NAME = 'GPM_3IMERGDF.07'
