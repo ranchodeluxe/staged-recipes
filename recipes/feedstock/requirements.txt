@@ -1,7 +1,9 @@
-s3fs
-boto3
-requests
-git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/feature/beam_io
+fsspec==2024.3.1
+git+https://github.com/ranchodeluxe/s3fs@gc/fetch_sync
+# boto3
+# requests
+#git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/feature/beam_io
+pangeo-forge-recipes
 apache-beam==2.52.0
 xarray==2024.1.1
 zarr==2.16.1
