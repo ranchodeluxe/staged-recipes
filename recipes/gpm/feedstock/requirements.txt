@@ -8,3 +8,4 @@ git+https://github.com/carbonplan/ndpyramid
 apache-beam==2.52.0
 xarray==2024.1.1
 zarr==2.16.1
+rioxarray
