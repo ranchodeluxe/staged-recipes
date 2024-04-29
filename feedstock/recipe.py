@@ -28,7 +28,7 @@ def assume_role() -> None:
     creds = client.assume_role(
         RoleArn='arn:aws:iam::444055461661:role/veda-data-reader-dev',
         RoleSessionName='emr-pforge-runner',
-        DurationSeconds=43200,
+        DurationSeconds=3600,
     )['Credentials']
     return {
         "key": creds["AccessKeyId"],
