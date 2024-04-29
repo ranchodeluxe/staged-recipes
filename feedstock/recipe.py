@@ -3,6 +3,7 @@ import pandas as pd
 import xarray as xr
 import fsspec
 import s3fs
+import boto3
 
 from beam_pyspark_runner.pyspark_runner import PySparkRunner
 from pangeo_forge_recipes.storage import FSSpecTarget
