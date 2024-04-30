@@ -94,7 +94,7 @@ source_fsspec_kwargs = {
   'anon': False,
   'client_kwargs': {'region_name': 'us-west-2'},
 }
-source_fsspec_kwargs.update(assume_role())
+#source_fsspec_kwargs.update(assume_role())
 
 
 target_fsspec_kwargs = {
