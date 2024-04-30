@@ -70,12 +70,13 @@ def print_and_return(x):
     print(x)
     return x
 
-
+# NOTE: source uses the EMR serverless execution role (veda-data-reader-dev)
 source_fsspec_kwargs = {
   'anon': False,
   'client_kwargs': {'region_name': 'us-west-2'},
 }
 
+# NOTE: target uses the EMR serverless execution role (veda-data-reader-dev)
 target_fsspec_kwargs = {
 	"anon": False,
 	"client_kwargs": {"region_name": "us-west-2"}
