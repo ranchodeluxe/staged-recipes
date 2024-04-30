@@ -18,25 +18,6 @@ from pangeo_forge_recipes.transforms import (
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
 
-
-def assume_role() -> None:
-    """role chain from EMR execution role to DAACC approved role
-
-    :return:
-    """
-    client = boto3.client('sts')
-    creds = client.assume_role(
-        RoleArn='arn:aws:iam::444055461661:role/veda-data-reader-dev',
-        RoleSessionName='emr-pforge-runner',
-        DurationSeconds=3600,
-    )['Credentials']
-    return {
-        "key": creds["AccessKeyId"],
-        "secret": creds["SecretAccessKey"],
-        "token": creds["SessionToken"],
-    }
-
-
 SHORT_NAME = 'GPM_3IMERGDF.07'
 CONCAT_DIMS = ['time']
 IDENTICAL_DIMS = ['lat', 'lon']
@@ -94,8 +75,6 @@ source_fsspec_kwargs = {
   'anon': False,
   'client_kwargs': {'region_name': 'us-west-2'},
 }
-#source_fsspec_kwargs.update(assume_role())
-
 
 target_fsspec_kwargs = {
 	"anon": False,
