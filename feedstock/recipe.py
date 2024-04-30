@@ -16,7 +16,7 @@ from pangeo_forge_recipes.transforms import (
 )
 
 import logging
-logging.getLogger('fsspec').setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 # def assume_role() -> None:
