@@ -25,7 +25,7 @@ IDENTICAL_DIMS = ['lat', 'lon']
 # 2023/07/3B-DAY.MS.MRG.3IMERG.20230731
 dates = [
     d.to_pydatetime().strftime('%Y/%m/3B-DAY.MS.MRG.3IMERG.%Y%m%d')
-    for d in pd.date_range('2000-06-01', '2020-06-01', freq='D')
+    for d in pd.date_range('2000-06-01', '2001-06-01', freq='D')
 ]
 
 
@@ -89,7 +89,6 @@ target_root = FSSpecTarget(fs_target, 's3://veda-pforge-emr-outputs')
 
 with beam.Pipeline(runner=PySparkRunner()) as p:
     (p | beam.Create(pattern.items())
-    | beam.Map(print_and_return)
 	| OpenURLWithFSSpec(open_kwargs=source_fsspec_kwargs)
 	| OpenWithXarray(file_type=pattern.file_type)
 	| StoreToZarr(
