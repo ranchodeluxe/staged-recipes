@@ -3,7 +3,7 @@ git+https://github.com/ranchodeluxe/s3fs@gc/fetch_sync
 boto3
 requests
 #pangeo-forge-recipes>=0.10.5
-git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/ndpyramid_final/pangeo_forge_recipes
+git+https://github.com/pangeo-forge/pangeo-forge-recipes@gc/ndpyramid_final
 apache-beam==2.53.0
 xarray==2024.1.1
 zarr==2.16.1
