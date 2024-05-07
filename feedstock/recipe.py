@@ -81,7 +81,7 @@ target_fsspec_kwargs = {
 	"anon": False,
 	"client_kwargs": {"region_name": "us-west-2"}
 }
-fs_target = s3fs.S3SyncFileSystem(**target_fsspec_kwargs)
+fs_target = s3fs.S3FileSystem(**target_fsspec_kwargs)
 #fs_target = fsspec.implementations.local.LocalFileSystem()
 target_root = FSSpecTarget(fs_target, 's3://veda-pforge-emr-outputs-v3')
 #target_root = FSSpecTarget(fs_target, '/home/jovyan/outputs/')
